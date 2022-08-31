@@ -1,6 +1,6 @@
 import { FastifyMulterModule } from "@nest-lab/fastify-multer";
 import { Module } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule } from "@nestjs/config";
 import { diskStorage } from "multer";
 import { CatsController } from "./cats.controller";
 import { CatsService } from "./cats.service";
@@ -9,8 +9,7 @@ import { CatsService } from "./cats.service";
   imports: [
     FastifyMulterModule.registerAsync({
       imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
+      useFactory: () => {
         const storages = {
           local: () => {
             return diskStorage({
@@ -20,10 +19,7 @@ import { CatsService } from "./cats.service";
         };
 
         return {
-          storage: storages[configService.get("file.driver")](),
-          limits: {
-            fileSize: configService.get("file.maxFileSize")
-          }
+          storage: storages["local"](),
         };
       }
     })
