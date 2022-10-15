@@ -1,32 +1,35 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { Roles } from '../common/decorators/roles.decorator';
-import { RolesGuard } from '../common/guards/roles.guard';
-import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
-import { CatsService } from './cats.service';
-import { CreateCatDto } from './dto/create-cat.dto';
-import { Cat } from './interfaces/cat.interface';
+import { FileInterceptor, FilesInterceptor } from "@nest-lab/fastify-multer";
+import {
+  Controller,
+  Post,
+  UploadedFile,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors
+} from "@nestjs/common";
+
+import { RolesGuard } from "../common/guards/roles.guard";
 
 @UseGuards(RolesGuard)
-@Controller('cats')
+@Controller("cats")
 export class CatsController {
-  constructor(private readonly catsService: CatsService) {}
+  constructor() {}
 
-  @Post()
-  @Roles('admin')
-  async create(@Body() createCatDto: CreateCatDto) {
-    this.catsService.create(createCatDto);
-  }
-
-  @Get()
-  async findAll(): Promise<Cat[]> {
-    return this.catsService.findAll();
-  }
-
-  @Get(':id')
-  findOne(
-    @Param('id', new ParseIntPipe())
-    id: number,
+  @Post("upload/cat")
+  @UseInterceptors(FileInterceptor("cat"))
+  async uploadFile(
+    @UploadedFile()
+    cat: any
   ) {
-    // get by ID logic
+    console.log(cat);
+  }
+
+  @Post("upload/cats")
+  @UseInterceptors(FilesInterceptor("cats"))
+  async uploadFiles(
+    @UploadedFiles()
+    cats: any
+  ) {
+    console.log(cats);
   }
 }
