@@ -19,7 +19,7 @@
     "test:e2e": "echo 'No e2e tests implemented yet.'"
   },
   "dependencies": {
-    "@nest-lab/fastify-multer": "1.0.0",
+    "@nest-lab/fastify-multer": "^1.0.0",
     "@nestjs/common": "9.0.1",
     "@nestjs/config": "2.2.0",
     "@nestjs/core": "9.0.1",
